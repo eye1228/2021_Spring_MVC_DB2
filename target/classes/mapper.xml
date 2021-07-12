@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<!-- mapper가 여러개 일때 namespace 로 구분한다. -->
+<mapper namespace="guestbook2">
+	<select id="list" resultType="com.ict.vo.VO">
+		select * from guestbook2 order by idx
+	</select>
+	<insert id="insert" parameterType="com.ict.vo.VO">
+		insert into guestbook2 values(guest_seq.nextval,#{name},#{subject}, #{email},#{pwd}, #{content}, #{file_name}, sysdate )
+	</insert>
+	<select id="onelist" parameterType="String" resultType="com.ict.vo.VO">
+		select * from guestbook2 where idx = #{idx}
+	</select>
+	<delete id="delete" parameterType="String">
+		delete from guestbook2 where idx = #{idx}		
+	</delete>
+</mapper>
+
+
+
+
+
+
+
