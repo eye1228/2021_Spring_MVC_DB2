@@ -147,41 +147,48 @@ public class MyController {
 			return new ModelAndView("error");
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*@RequestMapping("update.do")
+	@RequestMapping("update.do")
 	public ModelAndView updateCommand(@RequestParam("idx")String idx) {
 		try {
 			ModelAndView mv = new ModelAndView("update");
-			VO vo =  myService.getOneList(idx);
+			// 세션에 정보를 넣지 않으므로 idx 가지고 DB 검색해야 된다.
+			VO vo = myService.selectOne(idx);
 			mv.addObject("vo", vo);
-			
 			return mv;
 		} catch (Exception e) {
 			System.out.println(e);
 			return new ModelAndView("error") ;
 		}
 	}
-	
 	@RequestMapping("update_ok.do")
-	public ModelAndView updateokCommand(VO vo) {
+	public ModelAndView updateokCommand(VO vo, HttpServletRequest request) {
 		try {
-			myService.getUpdate(vo);
+			String path = request.getSession().getServletContext().getRealPath("/resources/upload");
+			MultipartFile file = vo.getF_name();
+			
+			String old_file_name = request.getParameter("old_file_name");
+			if(file.isEmpty()) {
+				// 첨부파일이 없으면 이전 파일로 대체
+				if(old_file_name == null) {
+					vo.setFile_name("");
+				}else {
+					vo.setFile_name(old_file_name);
+				}
+			}else {
+				// 첨부파일이 있으면 첨부파일을 사용
+				vo.setFile_name(file.getOriginalFilename());
+			}
+			 myService.updateGuestBook2(vo);
+			if(vo.getFile_name() != old_file_name) {
+				byte[] in = file.getBytes();
+				File out = new File(path, vo.getFile_name());
+				FileCopyUtils.copy(in, out);
+			}
 			return new ModelAndView("redirect:onelist.do?idx="+vo.getIdx());
 		} catch (Exception e) {
 			System.out.println(e);
-			System.out.println("????");
-			return new ModelAndView("error");
+			return new ModelAndView("redirect:update.do?idx="+vo.getIdx());
 		}
-	}*/
+	}
 	
 }

@@ -30,7 +30,7 @@ public class MyDAOImpl implements MyDAO{
 
 	@Override
 	public void updateGuestBook2(VO vo) throws Exception {
-		
+		sqlSessionTemplate.delete("guestbook2.delete", vo);	
 	}
 
 	@Override
